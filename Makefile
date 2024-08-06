@@ -17,7 +17,7 @@ macroDeploy.o: macroDeploy.c macro.h $(GLOBAL_DEPS)
 macro.o: macro.c macro.h $(GLOBAL_DEPS)
 	$(CC) $(FLAGS) -c macro.c
 
-utils.o: utils.c utils.h
+utils.o: utils.c $(GLOBAL_DEPS)
 	$(CC) $(FLAGS) -c utils.c
 
 clean:

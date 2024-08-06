@@ -7,6 +7,7 @@
 void *my_malloc(int size);
 
 char* getSubString(char* s, int i);
+/*booleans isSubString(char* s, char* t);*/
 
 
 #endif

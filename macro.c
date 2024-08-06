@@ -67,3 +67,30 @@ macro_ptr macroLookup(macro_table table, char* name) {
 char* getMacroNameFromLine(char* line) {
 	return getSubString(line, 5);
 }
+
+void writeLineToMacro(macro_ptr mcr, char* line) {
+	mcr->value = strncat(mcr->value, line, MAX_LINE_LEN);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

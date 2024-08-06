@@ -34,6 +34,8 @@ void freeMacroTable(macro_table table);
 macro_ptr macroLookup(macro_table table, char* name);
 
 char* getMacroNameFromLine(char* line);
+
+void writeLineToMacro(macro_ptr mcr, char* line);
 	
 #endif
 

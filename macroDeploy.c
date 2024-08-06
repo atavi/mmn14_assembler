@@ -10,7 +10,7 @@ int main(int argc, char *argv[]){
 
 	char *fileName;
 	fileName = argv[1];
-	bool macrFlag = FALSE;
+	bool mcrFlag = FALSE;
 	
 	/*allocate space for a single line
 	*/
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
 	afterMacro = fopen(newFileName, "w");
 	macro_table mcrTable = newMacro();
 
-	macro_ptr lastMacro = newMacro();
+	macro_ptr mcr = newMacro();
 	
 	/*open input file
 	*/
@@ -40,35 +40,41 @@ int main(int argc, char *argv[]){
 	curr_line_info.fileName = fileName;
 	curr_line_info.data = curr_line;
 	for (curr_line_info.index = 1; fgets(curr_line_info.data, 100, fp) != NULL ; curr_line_info.index++) {
-		if (macrFlag) {
+		if (mcrFlag) {
 			if (memcmp(curr_line_info.data, "endmacr", 7) != 0) {
 				/*macro data line
 				//write curr_line to macro.value
 				*/
+				writeLineToMacro(mcr, curr_line_info.data);
 				continue;
 			}
 			/*if here -> last line of macro definition
 			*/
-			macrFlag = FALSE;
+			mcrFlag = FALSE;
 			continue;
 		}
+		/* line starts with 'macr' - macro decleration
+		*/
 		if (memcmp(curr_line_info.data, "macr", 4) == 0) {
-			/*line starts with 'macr' - macro decleration
-			//copy macro name to macro table
+			/* getMacroFromName returns pointer to corresponding macro in macro table
 			*/
-			lastMacro = getMacroFromName(mcrTable, curr_line_info.data);
-			/*lastMacro points to lastMacro->next			
+			mcr = getMacroFromName(mcrTable, curr_line_info.data);
+			/*if current line is a new macro definition, mcr->next will point to mcrTable
 			*/
-			macrFlag = TRUE;
+			if (mcr->next == mcrTable) {
+				mcrTable = mcr;
+			}
+			mcrFlag = TRUE;
 			continue;
 		}
 		/*
-		if (macroLookup(curr_line, filename.mt)) {
-			//write macro.value to afterMacro
-			//continue
-		}*/
-		/*if here -> curr_line has no macro relevance
+		** if here, line is either command or a call for existing macro
 		*/
+		mcr = macroLookup(mcrTable, curr_line_info.data);
+		if (mcr != NULL) {
+			fputs(mcr->value, afterMacro);
+			continue;
+		}
 		fputs(curr_line_info.data, afterMacro);
 	}
 
