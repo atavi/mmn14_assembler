@@ -2,9 +2,9 @@
 #define _GLOBALS_H
 
 /* IC: Instruction counter initial value = 100 */
-#define IC_INIT_VAL = 100
+#define IC_INIT_VAL 100
 
-#define MAX_LINE_LEN = 80
+#define MAX_LINE_LEN 80
 
 /* Boolean definition */
 typedef enum booleans {TRUE = 1, FALSE = 0} bool ;

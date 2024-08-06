@@ -11,21 +11,24 @@ int main(int argc, char *argv[]){
 	fileName = argv[1];
 	bool macrFlag = FALSE;
 	
-	//allocate space for a single line
+	/*allocate space for a single line
+	*/
 	char curr_line[100];
 	line_info curr_line_info;
 	
-	//destination file
+	/*destination file
+	*/
 	FILE *afterMacro;
 	char newFileName[105];
 	strcpy(newFileName, argv[1]);
 	strcat(newFileName, ".am");
 	afterMacro = fopen(newFileName, "w");
 
-	macroTable lastMacro;
+	macro_ptr lastMacro;
 	
-	//open input file
-	FILE *fp = fopen(fileName, "r");
+	/*open input file
+	*/
+	FILE* fp = fopen(fileName, "r");
 	if (fp == NULL) {
         	printf("Cannot open file %s for reading\n", fileName);
         	return 1;
@@ -37,29 +40,34 @@ int main(int argc, char *argv[]){
 	for (curr_line_info.index = 1; fgets(curr_line_info.data, 100, fp) != NULL ; curr_line_info.index++) {
 		if (macrFlag) {
 			if (memcmp(curr_line_info.data, "endmacr", 7) != 0) {
-				//macro data line
+				/*macro data line
 				//write curr_line to macro.value
-				//continue
+				*/
+				continue;
 			}
-			// if here -> last line of macro definition
+			/*if here -> last line of macro definition
+			*/
 			macrFlag = FALSE;
 			continue;
 		}
 		if (memcmp(curr_line_info.data, "macr", 4) == 0) {
-			//line starts with 'macr' - macro decleration
+			/*line starts with 'macr' - macro decleration
 			//copy macro name to macro table
-			getMacroNameFromLine(curr_line, lastMacro);
-			//lastMacro points to lastMacro->next			
+			*/
+			lastMacro = getMacroNameFromLine(curr_line_info.data);
+			/*lastMacro points to lastMacro->next			
+			*/
 			macrFlag = TRUE;
-			continue
+			continue;
 		}
-		}
-		if (//lookupMacro(curr_line, filename.mt)) {
+		/*
+		if (lookupMacro(curr_line, filename.mt)) {
 			//write macro.value to afterMacro
 			//continue
-		}
-		//if here -> curr_line has no macro relevance
-		fputs(curr_line_info.data, afterMacro); //write current line to .am
+		}*/
+		/*if here -> curr_line has no macro relevance
+		*/
+		fputs(curr_line_info.data, afterMacro);
 	}
 
 	fclose(fp);
