@@ -13,7 +13,7 @@ typedef struct macro {
 macro_ptr newMacro();
 macro_ptr newMacroWithName(char* name);
 
-void addMacroToTable(macro_table *table, macro_ptr mcr);
+void addMacroToTable(macro_table* table, macro_ptr mcr);
 /*
 ** gets macro_table and macro_name
 ** checks if macro exists in table
@@ -23,7 +23,7 @@ void addMacroToTable(macro_table *table, macro_ptr mcr);
 ** else
 **	return pointer to corresponding macro in table
 */
-macr_ptr getMacroFromName(macro_table table, char* name);	
+macro_ptr getMacroFromName(macro_table table, char* name);	
 
 void freeMacroTable(macro_table table);
 

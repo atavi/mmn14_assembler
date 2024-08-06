@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "globals.h"
+#include "utils.h"
 #include "macro.h"
 
 int main(int argc, char *argv[]){
@@ -23,8 +24,9 @@ int main(int argc, char *argv[]){
 	strcpy(newFileName, argv[1]);
 	strcat(newFileName, ".am");
 	afterMacro = fopen(newFileName, "w");
+	macro_table mcrTable = newMacro();
 
-	macro_ptr lastMacro;
+	macro_ptr lastMacro = newMacro();
 	
 	/*open input file
 	*/
@@ -54,14 +56,14 @@ int main(int argc, char *argv[]){
 			/*line starts with 'macr' - macro decleration
 			//copy macro name to macro table
 			*/
-			lastMacro = getMacroNameFromLine(curr_line_info.data);
+			lastMacro = getMacroFromName(mcrTable, curr_line_info.data);
 			/*lastMacro points to lastMacro->next			
 			*/
 			macrFlag = TRUE;
 			continue;
 		}
 		/*
-		if (lookupMacro(curr_line, filename.mt)) {
+		if (macroLookup(curr_line, filename.mt)) {
 			//write macro.value to afterMacro
 			//continue
 		}*/

@@ -26,12 +26,12 @@ macro_ptr newMacroWithName(char* name) {
 }
 
 void addMacroToTable(macro_table *table, macro_ptr mcr) {
-	mcr->next = *table;
+	mcr->next = table;
 	table = mcr;
 }
 
-macr_ptr getMacroFromName(macro_table table, char* name) {
-	macr_ptr mcr;
+macro_ptr getMacroFromName(macro_table table, char* name) {
+	macro_ptr mcr;
 	mcr = macroLookup(table, name);
 	if (mcr == NULL) {
 		addMacroToTable(table, newMacroWithName(name));
