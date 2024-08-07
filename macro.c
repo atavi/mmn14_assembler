@@ -25,16 +25,23 @@ macro_ptr newMacroWithName(char* name) {
 	return mcr;
 }
 
-void addMacroToTable(macro_table *table, macro_ptr mcr) {
-	mcr->next = table;
-	table = mcr;
+
+/* pointer to table and new macro to add
+** macro is new head of list
+** new_head->next points to old table,
+** table points to new head
+*/
+void addMacroToTable(macro_table* table, macro_ptr new_head) {
+	new_head->next = *table; 
+	table = mcr*;
 }
 
-macro_ptr getMacroFromName(macro_table table, char* name) {
+macro_ptr getMacroFromName(macro_table* table, char* name) {
 	macro_ptr mcr;
-	mcr = macroLookup(table, name);
+	mcr = macroLookup(*table, name);
 	if (mcr == NULL) {
-		addMacroToTable(table, newMacroWithName(name));
+		mcr = newMacroWithName(name);
+		addMacroToTable(table, mcr);
 	}
 
 	return mcr;
@@ -54,12 +61,17 @@ void freeMacroTable(macro_table table) {
 }
 
 macro_ptr macroLookup(macro_table table, char* name) {
+		
+	printf("Macro lookup enter\t");
 	macro_ptr index = table;
 
 	while(index != NULL) {
 		if(strcmp(index->name, name) == 0) break;
 		index = index->next;
 	}
+		
+	printf("Macro lookup exit\t");
+
 	return index;
 }
 
