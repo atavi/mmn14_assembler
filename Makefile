@@ -21,5 +21,5 @@ utils.o: utils.c $(GLOBAL_DEPS)
 	$(CC) $(FLAGS) -c utils.c
 
 clean:
-	rm -rf *.o
+	rm -rf *.o $(TARGET)
 

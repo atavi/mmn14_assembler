@@ -7,14 +7,14 @@
 
 
 /* main of macro.c: creates *.am for file */
-void macrDeploy(char* fileName, macro_table table) {
+void macroDeploy(char* fileName, macro_table table) {
 
 	FILE *am;
 	FILE *fp;
 	fp = fopen(fileName, "r");
 	am = fopen("%s.am", "w");
 
-	macro_ptr curr_macro = NULL;
+	macro_ptr curr_macro;
 	macro_line_status curr_line_status;
 
 	line_info curr_line_info;
@@ -33,7 +33,7 @@ void macrDeploy(char* fileName, macro_table table) {
 				curr_macro = NULL;
 			case DEFAULT:
 				if (curr_macro != NULL) {
-					writeLineToMacro(curr_macro, curr_line_info.data);
+					writeLineToMacro(curr_line_info.data, curr_macro);					
 					break;
 				}
 				else {
@@ -49,6 +49,9 @@ void macrDeploy(char* fileName, macro_table table) {
 				printf("ILLEGAL MACRO LINE");
 		}
 	}
+
+	fclose(fp);
+	fclose(am);
 
 }
 
@@ -112,11 +115,11 @@ char* getMacroNameFromLine(char* line) {
 	return getSubString(line, 5);
 }
 
-void writeLineToMacro(macro_ptr mcr, char* line) {
+void writeLineToMacro(char* line, macro_ptr mcr) {
 	mcr->value = strncat(mcr->value, line, MAX_LINE_LEN);
 }
 
-macro_line_status isMacroLine(char* line) {
+macro_line_status getMacroLineStatus(char* line) {
 
 	if(!isSubString(line, "macr")) return DEFAULT; 
 
@@ -128,8 +131,9 @@ macro_line_status isMacroLine(char* line) {
 	
 }
 
-
-
+void writeMacroToFile(macro_ptr mcr, FILE* file) {
+	fputs(mcr->value, file);
+}
 
 
 

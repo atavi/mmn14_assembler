@@ -38,9 +38,11 @@ void freeMacroTable(macro_table table);
 */
 macro_ptr macroLookup(macro_table table, char* name);
 
-void writeLineToMacro(macro_ptr mcr, char* line);
-
 macro_line_status getMacroLineStatus(char* line);
+
+void writeLineToMacro(char* line, macro_ptr mcr);
+
+void writeMacroToFile(macro_ptr mcr, FILE* file);
 	
 #endif
 
