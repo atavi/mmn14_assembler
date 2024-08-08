@@ -15,7 +15,7 @@ int main(int argc, char *argv[]){
 	for(i = 1 ; i < argc ; i++) {
 		macroDeploy(argv[i], &macroTable);
 	}
-	freeMacroTable(&macroTable);
+	freeMacroTable(macroTable);
 	return 0;
 }
 

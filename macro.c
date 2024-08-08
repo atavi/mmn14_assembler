@@ -11,7 +11,7 @@ void macroDeploy(char* fileName, macro_table* table) {
 	printf("HI\n");
 	FILE *am;
 	FILE *fp;
-	char* newFileName[strlen(fileName) + 3];
+	char* newFileName = (char *)my_malloc(sizeof(char)*strlen(fileName) + 4); 
 	sprintf(newFileName, "%s.am", fileName);
 
 	fp = fopen(fileName, "r");
@@ -26,14 +26,13 @@ void macroDeploy(char* fileName, macro_table* table) {
 		return;
 	}
 	macro_ptr curr_macro;
-	curr_macro = NULL;
+	curr_macro = newMacro();
 	line_info curr_line_info;
 	bool mFlag = FALSE;
-	char* newMacroName[MAX_LINE_LEN];
-	printf("STOP HERE\n");
+	char newMacroName[MAX_LINE_LEN];
 	
 	/* iterated through file */
-	for (curr_line_info.index = 1; !feof(fp) && fgets(curr_line_info.data, MAX_LINE_LEN, fp) != NULL ; curr_line_info.index++) {
+	for (curr_line_info.index = 1; !feof(fp) && fgets(curr_line_info.data, MAX_LINE_LEN, fp) != NULL ; curr_line_info.index++) {		
 		printf("Line number %d:\tdata: %s\t\n", curr_line_info.index, curr_line_info.data);
 		if(!mFlag) {
 			if (curr_macro != NULL) {
@@ -43,7 +42,7 @@ void macroDeploy(char* fileName, macro_table* table) {
 			}	
 			if(memcmp(curr_line_info.data, "macr", 4) == 0) {
 				mFlag = TRUE;
-				*newMacroName = getMacroNameFromLine(curr_line_info.data);	
+				strcpy(newMacroName, getMacroNameFromLine(curr_line_info.data));	
 				curr_macro = newMacroWithName(newMacroName);
 				addMacroToTable(&table, curr_macro);
 				continue;
@@ -61,12 +60,14 @@ void macroDeploy(char* fileName, macro_table* table) {
 
 	fclose(fp);
 	fclose(am);
+	free(newFileName);
+	free(newMacroName);
 
 }
 
 macro_ptr newMacro() {
 	macro_ptr mcr = (macro_ptr)my_malloc(sizeof(macro));
-	mcr->name = (char *)my_malloc((MAX_LINE_LEN - 5) * sizeof(char));
+	mcr->name = (char *)my_malloc(MAX_LINE_LEN * sizeof(char));
 	mcr->value = (char *)my_malloc(MAX_LINE_LEN * sizeof(char));
 
 	mcr->name[0] = '\0';
@@ -76,7 +77,7 @@ macro_ptr newMacro() {
 	return mcr;
 }
 
-macro_ptr newMacroWithName(char* name) {
+macro_ptr newMacroWithName(char *name) {
 	macro_ptr mcr = newMacro();
 	mcr->name = (char*)my_malloc((strlen(name) + 1) * sizeof(char));
 	strcpy(mcr->name, name[5]);

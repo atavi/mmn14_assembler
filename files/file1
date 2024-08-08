@@ -1,0 +1,9 @@
+macr m_macr
+  stop 32
+  bridge 44
+endmacr
+get 31 11
+fire
+m_macr
+
+stop
