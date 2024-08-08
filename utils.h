@@ -5,6 +5,8 @@
 
 #define NEXT_NON_WHITE(string, index) \
         for (;string[(index)] && (string[(index)] == '\t' || string[(index)] == ' '); (++(index)));
+#define NEXT_WHITE(string, index) \
+	for (;string[(index)] && (string[(index)] != '\t' || string [(index)] != ' '); (++(index)));;
 
 void *my_malloc(int size);
 

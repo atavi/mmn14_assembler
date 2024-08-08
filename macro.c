@@ -7,47 +7,56 @@
 
 
 /* main of macro.c: creates *.am for file */
-void macroDeploy(char* fileName, macro_table table) {
-
+void macroDeploy(char* fileName, macro_table* table) {
+	printf("HI\n");
 	FILE *am;
 	FILE *fp;
-	fp = fopen(fileName, "r");
-	am = fopen("%s.am", "w");
-
-	macro_ptr curr_macro;
-	macro_line_status curr_line_status;
-
-	line_info curr_line_info;
-	
 	char* newFileName[strlen(fileName) + 3];
+	sprintf(newFileName, "%s.am", fileName);
+
+	fp = fopen(fileName, "r");
+	if (fp == NULL) {
+		printf("Error opening file %s\n", fileName);
+		return;
+	}
+	am = fopen(newFileName, "w");
+	if (am == NULL) {
+		printf("Error opening file %s\n", newFileName);
+		fclose(fp);
+		return;
+	}
+	macro_ptr curr_macro;
+	curr_macro = NULL;
+	line_info curr_line_info;
+	bool mFlag = FALSE;
+	char* newMacroName[MAX_LINE_LEN];
+	printf("STOP HERE\n");
 	
 	/* iterated through file */
-	for (curr_line_info.index = 1; fgets(curr_line_info.data, MAX_LINE_LEN, fp) != NULL ; curr_line_info.index++) {
-		curr_line_status = getMacroLineStatus(curr_line_info.data);
-		switch(curr_line_status) {
-			case DEFINITION:	
-				/* line is a new macro definition */ 
-				curr_macro = newMacroWithName(curr_line_info.data + 5);
+	for (curr_line_info.index = 1; !feof(fp) && fgets(curr_line_info.data, MAX_LINE_LEN, fp) != NULL ; curr_line_info.index++) {
+		printf("Line number %d:\tdata: %s\t\n", curr_line_info.index, curr_line_info.data);
+		if(!mFlag) {
+			if (curr_macro != NULL) {
+				printf("Printing line %d to file\n", curr_line_info.index);
+				writeMacroToFile(curr_macro, am);
+				continue;
+			}	
+			if(memcmp(curr_line_info.data, "macr", 4) == 0) {
+				mFlag = TRUE;
+				*newMacroName = getMacroNameFromLine(curr_line_info.data);	
+				curr_macro = newMacroWithName(newMacroName);
 				addMacroToTable(&table, curr_macro);
-			case ENDMACRO:
-				curr_macro = NULL;
-			case DEFAULT:
-				if (curr_macro != NULL) {
-					writeLineToMacro(curr_line_info.data, curr_macro);					
-					break;
-				}
-				else {
-					curr_macro = macroLookup(table, curr_line_info.data);
-					if (curr_macro != NULL) {
-						writeMacroToFile(curr_macro, am);
-						break;
-					}
-					fputs(curr_line_info.data, am);
-					break;
-				}
-			case ILLEGAL_MACRO_LINE:
-				printf("ILLEGAL MACRO LINE");
+				continue;
+			}
+			curr_macro->value = strcat(curr_macro->value, curr_line_info.data);
 		}
+		if(memcmp(curr_line_info.data, "endmacr", 7) == 0) {
+			mFlag = FALSE;
+			continue;
+		}
+		fputs(curr_line_info.data, am);
+		
+		
 	}
 
 	fclose(fp);
@@ -70,7 +79,7 @@ macro_ptr newMacro() {
 macro_ptr newMacroWithName(char* name) {
 	macro_ptr mcr = newMacro();
 	mcr->name = (char*)my_malloc((strlen(name) + 1) * sizeof(char));
-	strcpy(mcr->name, name);
+	strcpy(mcr->name, name[5]);
 	return mcr;
 }
 
@@ -118,16 +127,11 @@ char* getMacroNameFromLine(char* line) {
 void writeLineToMacro(char* line, macro_ptr mcr) {
 	mcr->value = strncat(mcr->value, line, MAX_LINE_LEN);
 }
-
+/* assume this line checked for macro relevnce */
 macro_line_status getMacroLineStatus(char* line) {
-
-	if(!isSubString(line, "macr")) return DEFAULT; 
-
-	if(memcmp(line, "macr ", 5) == 0 || memcmp(line, "macr\t", 5) == 0) return DEFINITION;
-
-	if(memcmp(line, "endmacr\n", 8) == 0) return ENDMACRO;
-
-	return ILLEGAL_MACRO_LINE; 
+	if (!isSubString(line, "macr")) return DEFAULT;
+	if (memcmp(line, "macr ", 5) == 0 || memcmp(line, "macr\t", 5)) return DEFINITION;
+	return ENDMACRO;
 	
 }
 

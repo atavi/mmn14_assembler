@@ -10,13 +10,12 @@ int main(int argc, char *argv[]){
 	
 	int i;
 
-	macro_table macroTable;
-	
+	macro_table macroTable = NULL;
 
 	for(i = 1 ; i < argc ; i++) {
-		macroDeploy(argv[i], macroTable);
+		macroDeploy(argv[i], &macroTable);
 	}
-	
+	freeMacroTable(&macroTable);
 	return 0;
 }
 

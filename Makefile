@@ -4,6 +4,7 @@ FLAGS = -ansi -Wall -pedantic
 GLOBAL_DEPS = globals.h utils.h
 OBJS = assembler.o macro.o utils.o
 TARGET = assembler
+FILES = files/*.am
 
 all:$(TARGET)
 
@@ -21,5 +22,5 @@ utils.o: utils.c $(GLOBAL_DEPS)
 	$(CC) $(FLAGS) -c utils.c
 
 clean:
-	rm -rf *.o $(TARGET)
+	rm -rf *.o $(TARGET) $(FILES)
 

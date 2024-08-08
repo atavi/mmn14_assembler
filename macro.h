@@ -3,7 +3,7 @@
 
 #include "globals.h"
 
-typedef enum macro_line_status {DEFAULT, DEFINITION, ENDMACRO, ILLEGAL_MACRO_LINE} macro_line_status ;
+typedef enum macro_line_status {DEFAULT, DEFINITION, ENDMACRO} macro_line_status ;
 
 typedef struct macro {	
 	char *name;
@@ -11,7 +11,7 @@ typedef struct macro {
 	struct macro *next;
 } macro, *macro_ptr, *macro_table;
 
-void macroDeploy(char* filName, macro_table table);
+void macroDeploy(char* filName, macro_table* table);
 
 /*
 ** initiate new empty macro
@@ -31,6 +31,8 @@ void addMacroToTable(macro_table* table, macro_ptr new_head);
 */
 
 void freeMacroTable(macro_table table);
+
+char* getMacroNameFromLine(char* line);
 
 /*
 ** iterate through table, compering name to current_macro->name
